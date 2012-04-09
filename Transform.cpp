@@ -231,6 +231,21 @@ void Transform::getRotationRadians(Vector3& vecOut) const
 
 }
 
+void Transform::getRotatedAxes(Vector3& x, Vector3& y, Vector3& z)
+{
+	x.X = matrix[0];
+	x.Y = matrix[1];
+	x.Z = matrix[2];
+
+	y.X = matrix[4];
+	y.Y = matrix[5];
+	y.Z = matrix[6];
+
+	z.X = matrix[8];
+	z.Y = matrix[9];
+	z.Z = matrix[10];
+}
+
 void Transform::getRotationDegrees(Vector3& vecOut) const
 {
 	getRotationRadians(vecOut);
