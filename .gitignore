@@ -1,0 +1,11 @@
+phase2
+tags
+*.o
+*.swp
+*sdf
+*.suo
+*.user
+*.log
+Debug/
+Release/
+ipch/
