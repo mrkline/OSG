@@ -1,8 +1,5 @@
+#include "StdAfx.hpp"
 #include "Arrow.hpp"
-
-#include <Windows.h>
-#include <GL/gl.h>
-#include <GL/glut.h>
 
 #include "MkMath.hpp"
 #include "Material.hpp"

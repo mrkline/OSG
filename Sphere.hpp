@@ -1,7 +1,5 @@
 #include "Renderable.hpp"
 
-#include <GL/glut.h>
-
 #include "Material.hpp"
 
 //! Wires a wireframe sphere of radius 1

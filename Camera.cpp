@@ -1,7 +1,5 @@
+#include "StdAfx.hpp"
 #include "Camera.hpp"
-
-#include <Windows.h>
-#include <GL/glu.h>
 
 #include "SceneNode.hpp"
 

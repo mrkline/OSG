@@ -1,8 +1,5 @@
+#include "StdAfx.hpp"
 #include "Tree.hpp"
-
-#include <Windows.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
 
 #include "Material.hpp"
 #include "Transform.hpp"

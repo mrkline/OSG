@@ -1,7 +1,6 @@
+#include "StdAfx.hpp"
 #include "Material.hpp"
 
-#include <Windows.h>
-#include <GL/GL.h>
 
 static Material* defaultMat = nullptr;
 

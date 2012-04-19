@@ -1,7 +1,5 @@
+#include "StdAfx.hpp"
 #include "Light.hpp"
-
-#include <Windows.h>
-#include <GL/gl.h>
 
 #include "SceneNode.hpp"
 #include "Vector3.hpp"
