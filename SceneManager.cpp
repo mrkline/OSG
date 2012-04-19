@@ -16,11 +16,13 @@ void SceneManager::renderScene() const
 	if (activeCamera == nullptr)
 		return;
 
-	// List of lights to render (at the time being we only support one)
+	// List of renderables to render
 	list<Renderable*> lights;
-	list<SceneNode*> nodesToRender;
+	list<Renderable*> bg;
+	list<Renderable*> normals;
 
-	// Update the transforms of all scene nodes via bfs
+	// Update the transforms of all scene nodes via bfs and add their
+	// renderables to the various queues
 	deque<SceneNode*> q;
 	for (auto it = sceneNodes.begin(); it != sceneNodes.end(); ++it)
 		q.push_back(*it);
@@ -29,12 +31,22 @@ void SceneManager::renderScene() const
 		SceneNode* curr = q.front();
 		q.pop_front();
 
-		nodesToRender.push_back(curr);
 		curr->updateAbsoluteTransform();
 		const list<Renderable*>& renderables = curr->getRenderables();
 		for (auto it = renderables.begin(); it != renderables.end(); ++it) {
-			if ((*it)->getType() == Renderable::RT_LIGHT)
+			switch ((*it)->getType()) {
+			case Renderable::RT_LIGHT:
 				lights.push_back(*it);
+				break;
+
+			case Renderable::RT_BACKGROUND:
+				bg.push_back(*it);
+				break;
+
+			case Renderable::RT_NORMAL:
+				normals.push_back(*it);
+				break;
+			}
 		}
 
 		// Enqueue all the node's children
@@ -50,27 +62,23 @@ void SceneManager::renderScene() const
 	for (auto it = lights.begin(); it != lights.end(); ++it)
 		(*it)->render();
 
-	// Draw all scene nodes
-	for (auto it = nodesToRender.begin(); it != nodesToRender.end(); ++it)
-		renderSceneNode(*it, false);
-}
-
-void SceneManager::renderSceneNode(SceneNode* node, bool shadowPass)
-{
-	// Save the camera's transform for rendering other nodes
-	glPushMatrix();
-
-	// Apply this node's transform
-	glMultMatrixf(node->getAbsoluteTransform().getArray());
-
-	// Draw all renderables
-	const list<Renderable*>& renderables = node->getRenderables();
-	for (auto it = renderables.begin(); it != renderables.end(); ++it) {
-		// We already rendered the camera and lights
-		if ((*it)->getType() == Renderable::RT_NORMAL)
-			(*it)->render();
+	// Draw all background objects
+	for (auto it = bg.begin(); it != bg.end(); ++it) {
+		glPushMatrix();
+		glMultMatrixf((*it)->getOwner()->getAbsoluteTransform().getArray());
+		(*it)->render();
+		glPopMatrix();
 	}
 
-	// Revert to the camera's transform, undoing this node's transform
-	glPopMatrix();
+	// Clear the depth buffer, allowing normal objects to always be drawn
+	// over the background ones
+	glClear(GL_DEPTH_BUFFER_BIT);
+
+	// Draw all normal objects
+	for (auto it = normals.begin(); it != normals.end(); ++it) {
+		glPushMatrix();
+		glMultMatrixf((*it)->getOwner()->getAbsoluteTransform().getArray());
+		(*it)->render();
+		glPopMatrix();
+	}
 }

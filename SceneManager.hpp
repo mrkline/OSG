@@ -17,8 +17,6 @@ public:
 	void setActiveCamera(Camera* cam) { activeCamera = cam; }
 
 private:
-	static void renderSceneNode(SceneNode* node, bool shadowPass);
-
 	std::list<SceneNode*> sceneNodes;
 	Camera* activeCamera;
 };
