@@ -13,6 +13,11 @@ from [Irrlicht](http://irrlicht.sourceforge.net/), with some minor tweaks.
 Future plans are to turn it into a deferred shading engine for the next CG
 project.
 
+### Dependencies
+
+The Texture class uses SILLY, a part of the CEGUI library, as an image loader.
+This allows textures to be loaded from PNG, JPEG, and TGA files.
+
 ### License
 
 (The zlib License)
