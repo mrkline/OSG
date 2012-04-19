@@ -24,7 +24,7 @@ public:
 	}
 
 	Material* getMaterial() { return mat; }
-	
+
 	void setMaterial(Material* m) { mat = m; }
 
 private:
