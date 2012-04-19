@@ -1,5 +1,7 @@
 #pragma once
 
+class Texture;
+
 //! A material is attached to renderables and holds rendering options
 struct Material
 {
@@ -9,6 +11,7 @@ struct Material
 	float ambient[4]; //!< Ambient light coefficients
 	float diffuse[4]; //!< Diffuse light coefficients
 	float specular[4]; //!< Specular light coefficients
+	Texture* texture;
 
 	// The constructor initializes the material to default values
 	Material();
