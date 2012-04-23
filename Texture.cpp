@@ -64,6 +64,7 @@ Texture::~Texture()
 
 void Texture::setAsActiveTexture()
 {
+	// Bind the texture and set its parameters
 	glBindTexture(GL_TEXTURE_2D, id);
 	for (auto it = intParams.begin(); it != intParams.end(); ++it)
 		glTexParameteri(GL_TEXTURE_2D, it->first, it->second);
@@ -84,8 +85,9 @@ void Texture::init(const void* data, int colorComponents,
 
 	intParams[GL_TEXTURE_MIN_FILTER] = GL_LINEAR_MIPMAP_NEAREST;
 	intParams[GL_TEXTURE_MIN_FILTER] = GL_LINEAR;
-	intParams[GL_TEXTURE_WRAP_S] = GL_REPEAT;
-	intParams[GL_TEXTURE_WRAP_T] = GL_REPEAT;
+	// Clamp texture coordinates by default
+	intParams[GL_TEXTURE_WRAP_S] = GL_CLAMP;
+	intParams[GL_TEXTURE_WRAP_T] = GL_CLAMP;
 
 	if (mipmaps) {
 		gluBuild2DMipmaps(GL_TEXTURE_2D, colorComponents, width, height,

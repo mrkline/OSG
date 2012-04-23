@@ -12,3 +12,4 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 #include <SILLY.h>
+#include <Cg/cgGL.h>

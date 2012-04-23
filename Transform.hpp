@@ -4,7 +4,7 @@
 #include "Vector3.hpp"
 
 /*!
-\breif A basic transform class
+\brief A basic transform class
 
 Inspired by and borrowed heavily from Irrlicht's transform matrix. Uses floats.
 */

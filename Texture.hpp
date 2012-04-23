@@ -12,7 +12,7 @@ public:
 	/*!
 	 * \brief Loads a texture from a PNG, JPEG, or TGA using CEGUI's SILLY
 	 * \param filename The name of the file to load as a texture
-	 * \param The desired texture format. Must be GL_RGB or GL_RGBA
+	 * \param format The desired texture format. Must be GL_RGB or GL_RGBA
 	 * \param mipmaps true to generate mipmaps
 	 */
 	Texture(const char* filename, GLenum format = GL_RGBA, bool mipmaps = true);

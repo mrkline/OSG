@@ -1,11 +1,13 @@
 #include "StdAfx.hpp"
 #include "Material.hpp"
 
+#include "CgProfile.hpp"
+#include "CgProgram.hpp"
 #include "Texture.hpp"
 
 static Material* defaultMat = nullptr;
 
-static Material* activeMat = nullptr;
+static Material* activeMat = getDefaultMaterial();
 
 static Material* shadowMat = nullptr;
 
@@ -32,6 +34,9 @@ Material::Material()
 	specular[2] = 0.0f;
 	specular[3] = 1.0f;
 	texture = nullptr;
+	vertexShader = nullptr;
+	fragmentShader = nullptr;
+	callback = nullptr;
 }
 
 Material* getDefaultMaterial()
@@ -48,30 +53,58 @@ Material* getActiveMaterial()
 
 void setActiveMaterial(Material* mat)
 {
+	// Ignore material change requests when rendering shadows
 	if (shadowMode)
 		return;
 
 	if (mat == nullptr)
 		mat = getDefaultMaterial();
 
+	// If the last material had active shaders, shut them down
+	if (activeMat->vertexShader != nullptr)
+		activeMat->vertexShader->getProfile().disable();
+	if (activeMat->fragmentShader != nullptr)
+		activeMat->fragmentShader->getProfile().disable();
+
 	activeMat = mat;
 
+	// Set lighting options
 	if (mat->lighting)
 		glEnable(GL_LIGHTING);
 	else
 		glDisable(GL_LIGHTING);
 
+	// Set fill mode
 	glPolygonMode(GL_FRONT_AND_BACK, mat->wireframe ? GL_LINE : GL_FILL);
+
+	// Set color parameters
 	glColor3fv(mat->color);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat->ambient);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat->diffuse);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat->specular);
+
+	// Activate this material's texture (if it has one)
 	if (mat->texture != nullptr) {
 		glEnable(GL_TEXTURE_2D);
 		mat->texture->setAsActiveTexture();
 	}
 	else {
 		glDisable(GL_TEXTURE_2D);
+	}
+
+	// Issue this material's callback (if it has one)
+	if (mat->callback != nullptr)
+		mat->callback(mat);
+
+	// Activate this material's vertex shader (if it has one)
+	if (mat->vertexShader != nullptr) {
+		mat->vertexShader->bind();
+		mat->vertexShader->getProfile().enable();
+	}
+	// Activate this material's pixel shader (if it has one)
+	if (mat->fragmentShader != nullptr) {
+		mat->fragmentShader->bind();
+		mat->fragmentShader->getProfile().enable();
 	}
 }
 
