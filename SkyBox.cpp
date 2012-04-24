@@ -5,17 +5,19 @@
 #include "Vector3.hpp"
 #include "Transform.hpp"
 
-static Material* sky = nullptr;
-static Material* ground = nullptr;
+using namespace std;
+
+static shared_ptr<Material> sky;
+static shared_ptr<Material> ground ;
 
 SkyBox::SkyBox()
 {
-	if (sky == nullptr) {
-		sky = new Material;
+	if (!sky) {
+		sky = make_shared<Material>();
 		sky->color[0] = 0.7f;
 		sky->color[1] = 0.7f;
 
-		ground = new Material;
+		ground = make_shared<Material>();
 		ground->color[0] = 0.0f;
 		ground->color[1] = 0.3f;
 		ground->color[2] = 0.0f;

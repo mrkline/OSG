@@ -1,6 +1,7 @@
 #pragma once
 
 #include <list>
+#include <memory>
 
 class Camera;
 class SceneNode;
@@ -8,15 +9,15 @@ class SceneNode;
 class SceneManager
 {
 public:
-	std::list<SceneNode*>& getSceneNodes() { return sceneNodes; }
+	std::list<std::shared_ptr<SceneNode>>& getSceneNodes() { return sceneNodes; }
 
-	const std::list<SceneNode*>& getSceneNodes() const { return sceneNodes; }
+	const std::list<std::shared_ptr<SceneNode>>& getSceneNodes() const { return sceneNodes; }
 
 	void renderScene() const;
 
-	void setActiveCamera(Camera* cam) { activeCamera = cam; }
+	void setActiveCamera(std::shared_ptr<Camera>& cam) { activeCamera = cam; }
 
 private:
-	std::list<SceneNode*> sceneNodes;
-	Camera* activeCamera;
+	std::list<std::shared_ptr<SceneNode>> sceneNodes;
+	std::shared_ptr<Camera> activeCamera;
 };

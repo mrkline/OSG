@@ -1,16 +1,16 @@
-#include "Renderable.hpp"
+#pragma once
 
-#include <Windows.h>
-#include <GL/glut.h>
+#include <memory>
 
 #include "Material.hpp"
+#include "Renderable.hpp"
 
 //! Renders a wireframe cube of radius 1
 //! \todo Allow client code to pick a radius
 class Cube : public Renderable
 {
 public:
-	Cube(Material* m = nullptr) : mat(m) { }
+	Cube(const std::shared_ptr<Material>& m = nullptr) : mat(m) { }
 
 	void render()
 	{
@@ -23,10 +23,10 @@ public:
 			glutSolidCube(1.0);
 	}
 
-	Material* getMaterial() { return mat; }
+	const std::shared_ptr<Material>& getMaterial() { return mat; }
 
-	void setMaterial(Material* m) { mat = m; }
+	void setMaterial(const std::shared_ptr<Material> m) { mat = m; }
 
 private:
-	Material* mat;
+	std::shared_ptr<Material> mat;
 };

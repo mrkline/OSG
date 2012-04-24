@@ -1,13 +1,16 @@
-#include "Renderable.hpp"
+#pragma once
+
+#include <memory>
 
 #include "Material.hpp"
+#include "Renderable.hpp"
 
 //! Wires a wireframe sphere of radius 1
 //! \todo Let client code set parameters
 class Sphere : public Renderable
 {
 public:
-	Sphere(Material* m = nullptr) : mat(m) { }
+	Sphere(const std::shared_ptr<Material>& m = nullptr) : mat(m) { }
 
 	void render()
 	{
@@ -20,10 +23,10 @@ public:
 			glutSolidSphere(1.0, 10, 10);
 	}
 
-	Material* getMaterial() { return mat; }
+	const std::shared_ptr<Material>& getMaterial() { return mat; }
 
-	void setMaterial(Material* m) { mat = m; }
+	void setMaterial(const std::shared_ptr<Material>& m) { mat = m; }
 
 private:
-	Material* mat;
+	std::shared_ptr<Material> mat;
 };

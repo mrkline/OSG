@@ -4,21 +4,23 @@
 #include "Material.hpp"
 #include "Transform.hpp"
 
-static Material* trunkMat = nullptr;
-static Material* branchesMat = nullptr;
+using namespace std;
+
+static shared_ptr<Material> trunkMat;
+static shared_ptr<Material> branchesMat;
 
 Tree::Tree()
 {
-	if (trunkMat == nullptr) {
+	if (trunkMat) {
 		// Initialize the materials
-		trunkMat = new Material;
+		trunkMat = make_shared<Material>();
 		trunkMat->lighting = true;
 		trunkMat->diffuse[0] = 0.542f;
 		trunkMat->diffuse[1] = 0.271f;
 		trunkMat->diffuse[2] = 0.075f;
 
 
-		branchesMat = new Material;
+		branchesMat = make_shared<Material>();
 		branchesMat->lighting = true;
 		branchesMat->diffuse[0] = 0.0f;
 		branchesMat->diffuse[1] = 0.9f;

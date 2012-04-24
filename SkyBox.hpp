@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "Renderable.hpp"
 
 struct Material;
@@ -7,8 +9,7 @@ struct Material;
 class SkyBox : public Renderable
 {
 public:
-	enum Face
-	{
+	enum Face {
 	    SBF_FRONT = 0,
 	    SBF_BACK,
 	    SBF_LEFT,
@@ -23,10 +24,12 @@ public:
 
 	void render();
 
-	Material* getFaceMaterial(Face f) { return faceMats[f]; }
+	const std::shared_ptr<Material>& getFaceMaterial(Face f)
+	{ return faceMats[f]; }
 
-	void setFaceMaterial(Face f, Material* m) { faceMats[f] = m; }
+	void setFaceMaterial(Face f, const std::shared_ptr<Material>& m)
+	{ faceMats[f] = m; }
 
 private:
-	Material* faceMats[6];
+	std::shared_ptr<Material> faceMats[6];
 };

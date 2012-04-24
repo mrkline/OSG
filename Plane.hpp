@@ -1,16 +1,15 @@
 #pragma once
 
+#include <memory>
+
 #include "Renderable.hpp"
 #include "Material.hpp"
-
-#include <Windows.h>
-#include <GL/gl.h>
 
 //! Renders a plane of radius 1 along the XZ plane
 class Plane : public Renderable
 {
 public:
-	Plane(Material* m) : mat(m) { }
+	Plane(const std::shared_ptr<Material>& m = nullptr) : mat(m) { }
 
 	void render()
 	{
@@ -28,10 +27,10 @@ public:
 		glEnd();
 	}
 
-	Material* getMaterial() { return mat; }
+	const std::shared_ptr<Material>& getMaterial() { return mat; }
 
-	void setMaterial(Material* m) { mat = m; }
+	void setMaterial(const std::shared_ptr<Material>& m) { mat = m; }
 
 private:
-	Material* mat;
+	std::shared_ptr<Material> mat;
 };

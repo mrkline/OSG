@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "Renderable.hpp"
 
 struct Material;
@@ -8,14 +10,14 @@ struct Material;
 class Arrow : public Renderable
 {
 public:
-	Arrow(Material* m = nullptr) : mat(m) { }
+	Arrow(const std::shared_ptr<Material>& m = nullptr) : mat(m) { }
 
 	void render();
 
-	Material* getMaterial() { return mat; }
+	const std::shared_ptr<Material>& getMaterial() { return mat; }
 
-	void setMaterial(Material* m) { mat = m; }
+	void setMaterial(const std::shared_ptr<Material>& m) { mat = m; }
 
 private:
-	Material* mat;
+	std::shared_ptr<Material> mat;
 };

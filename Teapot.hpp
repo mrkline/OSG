@@ -10,7 +10,7 @@
 class Teapot : public Renderable
 {
 public:
-	Teapot(Material* m = nullptr) : mat(m) { }
+	Teapot(const std::shared_ptr<Material>& m = nullptr) : mat(m) { }
 
 	void render()
 	{
@@ -23,10 +23,10 @@ public:
 			glutSolidTeapot(1.0);
 	}
 
-	Material* getMaterial() { return mat; }
+	const std::shared_ptr<Material>& getMaterial() { return mat; }
 
-	void setMaterial(Material* m) { mat = m; }
+	void setMaterial(std::shared_ptr<Material> m) { mat = m; }
 
 private:
-	Material* mat;
+	std::shared_ptr<Material> mat;
 };

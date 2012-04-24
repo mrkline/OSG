@@ -1,10 +1,12 @@
 #pragma once
 
+#include <memory>
+
 class SceneNode;
 
 //! This is an interface for a renderable object which can be attached to
 //! scene nodes
-class Renderable
+class Renderable : public std::enable_shared_from_this<Renderable>
 {
 public:
 	//! Type of renderable
@@ -15,19 +17,18 @@ public:
 	    RT_NORMAL //!< An ordinary object
 	};
 
-	Renderable() : owner(nullptr) { }
-
 	//! Used by the SceneManager to properly render cameras and lights
 	virtual RenderableType getType() { return RT_NORMAL; }
 
 	virtual void render() = 0;
 
-	SceneNode* getOwner() { return owner; }
+	const std::weak_ptr<SceneNode>& getOwner() const { return owner; }
 
 	//! Called by the owning scene node when this renderable object is attached
-	//! to it
-	void setOwner(SceneNode* newOwner);
+	//! or removed from it
+	void setOwner(const std::weak_ptr<SceneNode>& newOwner)
+	{ owner = newOwner; }
 
 protected:
-	SceneNode* owner;
+	std::weak_ptr<SceneNode> owner;
 };

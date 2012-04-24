@@ -14,7 +14,7 @@ class Renderable;
 
 A tree of SceneNodes is managed by the scene manager.
 */
-class SceneNode : public NamedClass
+class SceneNode : public NamedClass, public std::enable_shared_from_this<SceneNode>
 {
 public:
 
@@ -25,12 +25,9 @@ public:
 	\param id An ID that can be used to identify the object
 	\param name A name that can be used to identify the object
 	*/
-	SceneNode(SceneNode* parent = nullptr,
+	SceneNode(const std::shared_ptr<SceneNode>& parent = nullptr,
 	          const Transform& startingTransform = Transform(),
 	          int id = -1, const std::string& name = std::string());
-
-	//! Deconstructor. Deletes all children
-	virtual ~SceneNode();
 
 	//! Updates the absolute transform of the object
 	void update();
@@ -56,24 +53,14 @@ public:
 	//! Gets the absolute transform
 	const Transform& getAbsoluteTransform() const { return absTrans; }
 
-	/*!
-	\brief Adds a renderable object to this scene node
+	//! Adds a renderable object to this scene node
+	void addRenderable(const std::shared_ptr<Renderable>& toAdd);
 
-	Adding a renderable object transfers its ownership to this scene node.
-	It will be deleteed on this node's destruction.
-	*/
-	void addRenderable(Renderable* toAdd);
-
-	/*!
-	\brief Removes a renderable object from this scene node
-
-	Removing the object transfers ownership back to the client's code.
-	The client code is responsible for deleting the object after this is called.
-	*/
-	void removeRenderable(Renderable* toRemove);
+	//! Removes a renderable object from this scene node
+	void removeRenderable(const std::shared_ptr<Renderable>& toRemove);
 
 	//! Gets the list of renderable objects attached to this scene node
-	const std::list<Renderable*>& getRenderables() const { return renderables; }
+	const std::list<std::shared_ptr<Renderable>>& getRenderables() const { return renderables; }
 
 	// Functions to manipulate the object tree
 
@@ -85,7 +72,7 @@ public:
 	\param child The object to search for in this object's children
 	\returns true if this object has the specified child
 	*/
-	bool hasChild(SceneNode* child) const;
+	bool hasChild(const std::shared_ptr<SceneNode>& child) const;
 
 	/*!
 	\brief Tests if this object has a given child
@@ -107,7 +94,7 @@ public:
 	\param ancestor The object to search for in this object's ancestry
 	\returns true if this object has the specified ancestor
 	*/
-	bool hasAncestor(SceneNode* ancestor) const;
+	bool hasAncestor(const std::shared_ptr<SceneNode>& ancestor) const;
 
 	/*!
 	\brief Tests if this object has a given ancestor
@@ -133,7 +120,7 @@ public:
 
 	Performs a BFS for the descendant
 	*/
-	bool hasDescendant(SceneNode* descendant) const;
+	bool hasDescendant(const std::shared_ptr<SceneNode>& descendant) const;
 
 	/*!
 	\brief Tests if this object has a given descendant
@@ -157,16 +144,17 @@ public:
 	This method will remove the component from its current parent (if it exists) and
 	set it to the new one.
 	*/
-	void setParent(SceneNode* newParent);
+	void setParent(const std::weak_ptr<SceneNode>& newParent);
 
 	//! Gets the object's parent
-	SceneNode* getParent() const { return parent; }
+	const std::weak_ptr<SceneNode>& getParent() const { return parent; }
 
 	//! Gets a list of the node's children
-	std::list<SceneNode*>& getChildren() { return children; }
+	std::list<std::shared_ptr<SceneNode>>& getChildren() { return children; }
 
 	//! Gets a list of the node's children
-	const std::list<SceneNode*>& getChildren() const { return children; }
+	const std::list<std::shared_ptr<SceneNode>>& getChildren() const
+	{ return children; }
 
 	//! Removes this object from its parent
 	void removeFromParent();
@@ -177,31 +165,23 @@ public:
 
 	This method removes the child from its current parent, sets this component
 	as its parent, and adds the new child to this component's list of children.
-	Adding a child transfers ownership of the child to this scene node.
-	All children will be deleted on this object's destruction.
 	*/
-	void addChild(SceneNode* child);
+	void addChild(const std::shared_ptr<SceneNode>& child);
 
 	/*!
 	\brief Remove a child object
 	\param child Child object to remove
-
-	Removing the child transfers ownership back to the client's code.
-	The client code is responsible for deleting the child after this is called.
 	*/
-	void removeChild(SceneNode* child);
-
-	//! Delete all children
-	void deleteAllChildren();
+	void removeChild(const std::shared_ptr<SceneNode>& child);
 
 protected:
 	Transform trans; //!< The transform for the scene node
 	Transform absTrans; //!< The cumulative absolute transform
 
 	//! Node's parent, or null if it has none
-	SceneNode* parent;
+	std::weak_ptr<SceneNode> parent;
 	//! Linked list of children of this node
-	std::list<SceneNode*> children;
+	std::list<std::shared_ptr<SceneNode>> children;
 	//! Linked list of renderable objects attached to this node
-	std::list<Renderable*> renderables;
+	std::list<std::shared_ptr<Renderable>> renderables;
 };

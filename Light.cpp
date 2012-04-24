@@ -6,7 +6,7 @@
 
 void Light::render()
 {
-	auto pos = owner->getAbsoluteTransform().getTranslation();
+	auto pos = owner.lock()->getAbsoluteTransform().getTranslation();
 	float positionArr[] = {pos.X, pos.Y, pos.Z, 1.0f};
 	glLightfv(GL_LIGHT0, GL_POSITION, positionArr);
 }

@@ -10,18 +10,13 @@
 using namespace std;
 using namespace Exceptions;
 
-SceneNode::SceneNode(SceneNode* parent, const Transform& startingTransform,
+SceneNode::SceneNode(const shared_ptr<SceneNode>& parent,
+                     const Transform& startingTransform,
                      int id, const string& name)
 	: NamedClass(id, name), trans(startingTransform), parent(parent)
 {
-	if (parent != nullptr)
-		parent->children.push_back(this);
-}
-
-SceneNode::~SceneNode()
-{
-	// Kill all children.
-	deleteAllChildren();
+	if (parent)
+		parent->children.push_back(shared_from_this());
 }
 
 void SceneNode::update()
@@ -33,48 +28,39 @@ void SceneNode::update()
 
 void SceneNode::updateAbsoluteTransform()
 {
-	if (parent == nullptr)
+	auto p = parent.lock();
+	if (!p)
 		absTrans = trans;
 	else
-		absTrans = trans * parent->absTrans;
+		absTrans = trans * p->absTrans;
 }
 
 
-void SceneNode::addRenderable(Renderable* toAdd)
+void SceneNode::addRenderable(const shared_ptr<Renderable>& toAdd)
 {
-	if (toAdd == nullptr) {
-		throw ArgumentNullException(
-		    "You cannot add a null renderable object to a scene node.",
-		    __FUNCTION__);
-	}
 	if (find(renderables.begin(), renderables.end(), toAdd)
 	        != renderables.end()) {
 		throw ArgumentException(
 		    "You cannot add the same renderable object to a scene node twice.",
 		    __FUNCTION__);
 	}
-	toAdd->setOwner(this);
+	toAdd->setOwner(shared_from_this());
 	renderables.push_back(toAdd);
 }
 
-void SceneNode::removeRenderable(Renderable* toRemove)
+void SceneNode::removeRenderable(const std::shared_ptr<Renderable>& toRemove)
 {
-	if (toRemove == nullptr) {
-		throw ArgumentNullException(
-		    "You cannot remove a null renderable object from a scene node.",
-		    __FUNCTION__);
-	}
 	auto it = find(renderables.begin(), renderables.end(), toRemove);
 	if (it == renderables.end()) {
 		throw ArgumentException(
 		    "The renderable object to be removed is not in this scene node.",
 		    __FUNCTION__);
 	}
-	toRemove->setOwner(nullptr);
+	toRemove->setOwner(weak_ptr<SceneNode>());
 	renderables.erase(it);
 }
 
-bool SceneNode::hasChild(SceneNode* child) const
+bool SceneNode::hasChild(const shared_ptr<SceneNode>& child) const
 {
 	return find(children.begin(), children.end(), child) != children.end();
 }
@@ -97,9 +83,9 @@ bool SceneNode::hasChild(int childId) const
 	return false;
 }
 
-bool SceneNode::hasAncestor(SceneNode* ancestor) const
+bool SceneNode::hasAncestor(const shared_ptr<SceneNode>& ancestor) const
 {
-	for (SceneNode* curr = parent; curr != nullptr; curr = curr->parent) {
+	for (auto curr = parent.lock(); curr; curr = curr->parent.lock()) {
 		if (curr == ancestor)
 			return true;
 	}
@@ -108,7 +94,7 @@ bool SceneNode::hasAncestor(SceneNode* ancestor) const
 
 bool SceneNode::hasAncestor(const string& ancestorName) const
 {
-	for (SceneNode* curr = parent; curr != nullptr; curr = curr->parent) {
+	for (auto curr = parent.lock(); curr; curr = curr->parent.lock()) {
 		if (curr->name == ancestorName)
 			return true;
 	}
@@ -117,32 +103,32 @@ bool SceneNode::hasAncestor(const string& ancestorName) const
 
 bool SceneNode::hasAncestor(int ancestorId) const
 {
-	for (SceneNode* curr = parent; curr != nullptr; curr = curr->parent) {
+	for (auto curr = parent.lock(); curr; curr = curr->parent.lock()) {
 		if (curr->id == ancestorId)
 			return true;
 	}
 	return false;
 }
 
-bool SceneNode::hasDescendant(SceneNode* descendant) const
+bool SceneNode::hasDescendant(const shared_ptr<SceneNode>& descendant) const
 {
 	// Run a BFS
 	queue<SceneNode*> q;
 
 	for (auto it = children.begin(); it != children.end(); ++it)
-		q.push(*it);
+		q.push(it->get());
 
 	while (!q.empty()) {
-		SceneNode* curr = q.front();
+		auto curr = q.front();
 		q.pop();
 
-		if (curr == descendant) {
+		if (curr == descendant.get()) {
 			return true;
 		}
 		else {
-			const list<SceneNode*>& currChildren = curr->children;
+			const auto& currChildren = curr->children;
 			for (auto it = currChildren.begin(); it != currChildren.end(); ++it)
-				q.push(*it);
+				q.push(it->get());
 		}
 	}
 
@@ -155,19 +141,19 @@ bool SceneNode::hasDescendant(const string& descendantName) const
 	queue<SceneNode*> q;
 
 	for (auto it = children.begin(); it != children.end(); ++it)
-		q.push(*it);
+		q.push(it->get());
 
 	while (!q.empty()) {
-		SceneNode* curr = q.front();
+		auto curr = q.front();
 		q.pop();
 
 		if (curr->name == descendantName) {
 			return true;
 		}
 		else {
-			const list<SceneNode*>& currChildren = curr->children;
+			const auto& currChildren = curr->children;
 			for (auto it = currChildren.begin(); it != currChildren.end(); ++it)
-				q.push(*it);
+				q.push(it->get());
 		}
 	}
 
@@ -180,50 +166,43 @@ bool SceneNode::hasDescendant(int descendantId) const
 	queue<SceneNode*> q;
 
 	for (auto it = children.begin(); it != children.end(); ++it)
-		q.push(*it);
+		q.push(it->get());
 
 	while (!q.empty()) {
-		SceneNode* curr = q.front();
+		auto curr = q.front();
 		q.pop();
 
 		if (curr->id == descendantId) {
 			return true;
 		}
 		else {
-			const list<SceneNode*>& children = curr->children;
+			const auto& children = curr->children;
 			for (auto it = children.begin(); it != children.end(); ++it)
-				q.push(*it);
+				q.push(it->get());
 		}
 	}
 
 	return false;
 }
 
-void SceneNode::setParent(SceneNode* newParent)
+void SceneNode::setParent(const weak_ptr<SceneNode>& newParent)
 {
-	if (newParent == this)
-		throw ArgumentException(
-		    "A scene node cannot set itself as its parent.",
-		    __FUNCTION__);
-
 	removeFromParent();
-	if (newParent != nullptr)
-		newParent->addChild(this);
+	auto np = newParent.lock();
+	if (np)
+		np->addChild(shared_from_this());
 }
 
 void SceneNode::removeFromParent()
 {
-	if (parent != nullptr)
-		parent->removeChild(this);
+	auto p = parent.lock();
+	if (p)
+		p->removeChild(shared_from_this());
 }
 
-void SceneNode::addChild(SceneNode* child)
+void SceneNode::addChild(const shared_ptr<SceneNode>& child)
 {
-	if (child == nullptr)
-		throw ArgumentNullException("A scene node cannot add a null child.",
-		                            __FUNCTION__);
-
-	if (child == this)
+	if (child.get() == this)
 		throw ArgumentException("A scene node cannot add itself as a child.",
 		                        __FUNCTION__);
 
@@ -236,18 +215,14 @@ void SceneNode::addChild(SceneNode* child)
 
 	child->removeFromParent();
 	children.push_back(child);
-	child->parent = this;
+	child->parent = shared_from_this();
 }
 
-void SceneNode::removeChild(SceneNode* child)
+void SceneNode::removeChild(const shared_ptr<SceneNode>& child)
 {
-	if (child == nullptr)
-		throw ArgumentNullException("A scene node cannot remove a null child.",
-		                            __FUNCTION__);
-
 	auto it = find(children.begin(), children.end(), child);
 	if (it != children.end()) {
-		child->parent = nullptr;
+		child->parent.reset();
 		children.erase(it);
 		return;
 	}
@@ -255,12 +230,4 @@ void SceneNode::removeChild(SceneNode* child)
 	throw ArgumentException(
 	    "A scene node could not find the child that was to be removed.",
 	    __FUNCTION__);
-}
-
-void SceneNode::deleteAllChildren()
-{
-	for (auto it = children.begin(); it != children.end(); ++it)
-		delete *it;
-
-	children.clear();
 }
