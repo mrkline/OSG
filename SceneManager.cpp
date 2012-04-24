@@ -1,7 +1,6 @@
+#include "StdAfx.hpp"
 #include "SceneManager.hpp"
 
-#include <Windows.h>
-#include <GL/gl.h>
 #include <deque>
 
 #include "SceneNode.hpp"
