@@ -1,9 +1,8 @@
 #include "StdAfx.hpp"
 #include "Texture.hpp"
 
-#include <fstream> // TEMP
-
 #include "Exceptions.hpp"
+#include "GLErrors.hpp"
 
 Texture::Texture(const char* filename, GLenum format, bool mipmaps)
 	: hasMipmaps(mipmaps)
@@ -78,6 +77,7 @@ void Texture::init(const void* data, int colorComponents,
                    GLenum format, GLenum type, bool mipmaps)
 {
 	glGenTextures(1, &id);
+	throwGLExceptions(__FUNCTION__);
 	glBindTexture(GL_TEXTURE_2D, id);
 	// select modulate to mix texture with color for shading
 	// Likely not needed since we plan on using shaders for everything
@@ -92,9 +92,11 @@ void Texture::init(const void* data, int colorComponents,
 	if (mipmaps) {
 		gluBuild2DMipmaps(GL_TEXTURE_2D, colorComponents, width, height,
 		                  format, type, data);
+		throwGLExceptions(__FUNCTION__);
 	}
 	else {
 		glTexImage2D(GL_TEXTURE_2D, 0, colorComponents, width, height,
 		             0, format, type, data);
+		throwGLExceptions(__FUNCTION__);
 	}
 }
