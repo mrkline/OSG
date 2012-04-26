@@ -21,6 +21,8 @@ Cg shader code, for obvious reasons, depends on the
 The Texture class uses SILLY, a part of the CEGUI library, as an image loader.
 This allows textures to be loaded from PNG, JPEG, and TGA files.
 
+GLEW is used to access Framebuffer functionality.
+
 ### License
 
 (The zlib License)
