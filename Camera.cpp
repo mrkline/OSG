@@ -22,7 +22,7 @@ void Camera::render()
 	Vector3 camLocation = owner.lock()->getAbsoluteTransform().getTranslation();
 	view.setTranslation(camLocation); // cam location
 	Vector3 toTarget =  target - camLocation;
-	view.setRotationFromAxes(Vector3::crossProduct(up, toTarget), up,
+	view.rotateFromAxes(Vector3::crossProduct(up, toTarget), up,
 	                         -toTarget);
 	view.setToInverse();
 	glMultMatrixf(view.getArray());

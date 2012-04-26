@@ -343,8 +343,9 @@ void Transform::setInverseTranslation(const Vector3& translation)
 	matrix[14] = -translation.Z;
 }
 
-void Transform::setRotationRadians(const Vector3& rotation)
+void Transform::rotateRadians(const Vector3& rotation)
 {
+	Transform rot;
 	const float cr = cos(rotation.X);
 	const float sr = sin(rotation.X);
 	const float cp = cos(rotation.Y);
@@ -352,44 +353,50 @@ void Transform::setRotationRadians(const Vector3& rotation)
 	const float cy = cos(rotation.Z);
 	const float sy = sin(rotation.Z);
 
-	matrix[0] = cp * cy;
-	matrix[1] = cp * sy;
-	matrix[2] = -sp;
+	rot.matrix[0] = cp * cy;
+	rot.matrix[1] = cp * sy;
+	rot.matrix[2] = -sp;
 
 	const float srsp = sr * sp;
 	const float crsp = cr * sp;
 
-	matrix[4] = srsp * cy - cr * sy;
-	matrix[5] = srsp * sy + cr * cy;
-	matrix[6] = sr * cp;
+	rot.matrix[4] = srsp * cy - cr * sy;
+	rot.matrix[5] = srsp * sy + cr * cy;
+	rot.matrix[6] = sr * cp;
 
-	matrix[8] = crsp * cy + sr * sy;
-	matrix[9] = crsp * sy - sr * cy;
-	matrix[10] = cr * cp;
+	rot.matrix[8] = crsp * cy + sr * sy;
+	rot.matrix[9] = crsp * sy - sr * cy;
+	rot.matrix[10] = cr * cp;
+
+	*this *= rot;
 }
 
-void Transform::setRotationDegrees(const Vector3& rotation)
+void Transform::rotateDegrees(const Vector3& rotation)
 {
-	setRotationRadians(rotation.getScaledBy(Math::kDegToRad));
+	rotateRadians(rotation.getScaledBy(Math::kDegToRad));
 }
 
-void Transform::setRotationFromAxes(Vector3 x, Vector3 y, Vector3 z)
+void Transform::rotateFromAxes(Vector3 x, Vector3 y, Vector3 z)
 {
+	Transform rot;
+
 	x.normalize();
 	y.normalize();
 	z.normalize();
 
-	matrix[0] = x.X;
-	matrix[1] = x.Y;
-	matrix[2] = x.Z;
+	rot.matrix[0] = x.X;
+	rot.matrix[1] = x.Y;
+	rot.matrix[2] = x.Z;
 
-	matrix[4] = y.X;
-	matrix[5] = y.Y;
-	matrix[6] = y.Z;
+	rot.matrix[4] = y.X;
+	rot.matrix[5] = y.Y;
+	rot.matrix[6] = y.Z;
 
-	matrix[8] = z.X;
-	matrix[9] = z.Y;
-	matrix[10] = z.Z;
+	rot.matrix[8] = z.X;
+	rot.matrix[9] = z.Y;
+	rot.matrix[10] = z.Z;
+
+	*this *= rot;
 }
 
 void Transform::setTranslation(const Vector3& translation)
@@ -399,11 +406,15 @@ void Transform::setTranslation(const Vector3& translation)
 	matrix[14] = translation.Z;
 }
 
-void Transform::setScale(const Vector3& scale)
+void Transform::scale(const Vector3& scale)
 {
-	matrix[0] = scale.X;
-	matrix[5] = scale.Y;
-	matrix[10] = scale.Z;
+	Transform s;
+
+	s.matrix[0] = scale.X;
+	s.matrix[5] = scale.Y;
+	s.matrix[10] = scale.Z;
+
+	*this *= s;
 }
 
 void Transform::setFromArray(const float* transformMatrix)

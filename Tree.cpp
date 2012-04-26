@@ -31,7 +31,7 @@ Tree::Tree()
 void Tree::render()
 {
 	Transform rot;
-	rot.setRotationDegrees(Vector3(-90.0f, 0.0, 0.0f));
+	rot.rotateDegrees(Vector3(-90.0f, 0.0, 0.0f));
 	glMultMatrixf(rot.getArray());
 	setActiveMaterial(trunkMat);
 	GLUquadric* q = gluNewQuadric();

@@ -239,19 +239,19 @@ public:
 	//! Sets the translation to the inverse of the provided translation
 	void setInverseTranslation(const Vector3& translation);
 
-	//! Sets the rotation of this transform to the provided one in degrees
-	void setRotationDegrees(const Vector3& rotation);
+	//! Rotates this transform the provided angles in degrees
+	void rotateDegrees(const Vector3& rotation);
 
-	//! Sets the rotation of this transform to the provided one in radians
-	void setRotationRadians(const Vector3& rotation);
+	//! Rotates this transform the provided angles in radians
+	void rotateRadians(const Vector3& rotation);
 
-	void setRotationFromAxes(const Vector3 x, Vector3 y, Vector3 z);
+	void rotateFromAxes(const Vector3 x, Vector3 y, Vector3 z);
 
 	//! Sets the translation of this transform
 	void setTranslation(const Vector3& translation);
 
-	//! Sets the scale of this transform
-	void setScale(const Vector3& rotation);
+	//! Scales this transform
+	void scale(const Vector3& rotation);
 
 	//! Sets the transform from the first 16 values of an array
 	void setFromArray(const float* transformMatrix);
