@@ -19,7 +19,8 @@ public:
 
 	/*!
 	 * \brief Loads a texture directly from memory
-	 * \param data A pointer to the texture data
+	 * \param data A pointer to the texture data. Pass null in order to create a
+	 *             blank texture (e.g. for Render To Texture)
 	 * \param colorComponents The number of color channels the texture contains
 	 * \param width The width of the texture, in pixels
 	 * \param height The height of the texture, in pixels
@@ -36,6 +37,10 @@ public:
 	//! \todo We'll have to change this when we support multitexturing
 	void setAsActiveTexture();
 
+	size_t getWidth() const { return width; }
+
+	size_t getHeight() const { return height; }
+
 	//! Gets the OpenGL ID of this texture
 	unsigned int getID() { return id; }
 
@@ -51,6 +56,8 @@ private:
 	          GLenum format, GLenum type, bool mipmaps);
 
 	unsigned int id;
+	size_t width;
+	size_t height;
 	bool hasMipmaps;
 	std::map<GLenum, int> intParams;
 	std::map<GLenum, float> floatParams;

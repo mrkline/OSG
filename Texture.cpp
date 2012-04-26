@@ -76,6 +76,8 @@ void Texture::init(const void* data, int colorComponents,
                    size_t width, size_t height,
                    GLenum format, GLenum type, bool mipmaps)
 {
+	this->width = width;
+	this->height = height;
 	glGenTextures(1, &id);
 	throwGLExceptions(__FUNCTION__);
 	glBindTexture(GL_TEXTURE_2D, id);
