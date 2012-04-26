@@ -17,10 +17,17 @@ public:
 	    RT_NORMAL //!< An ordinary object
 	};
 
+	Renderable() : visible(true) { }
+
 	//! Used by the SceneManager to properly render cameras and lights
 	virtual RenderableType getType() { return RT_NORMAL; }
 
 	virtual void render() = 0;
+
+	bool isVisible() const {return visible; }
+
+	//! Sets if this renderable will be drawn by the SceneManager
+	void setVisible(bool v) { visible = v; }
 
 	const std::weak_ptr<SceneNode>& getOwner() const { return owner; }
 
@@ -31,4 +38,5 @@ public:
 
 protected:
 	std::weak_ptr<SceneNode> owner;
+	bool visible;
 };

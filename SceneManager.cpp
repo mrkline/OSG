@@ -59,15 +59,17 @@ void SceneManager::renderScene() const
 
 	// Draw all lights next
 	for (auto it = lights.begin(); it != lights.end(); ++it)
-		(*it)->render();
+		if ((*it)->isVisible()) (*it)->render();
 
 	// Draw all background objects
 	for (auto it = bg.begin(); it != bg.end(); ++it) {
-		glPushMatrix();
-		glMultMatrixf((*it)->getOwner().lock()->
-		              getAbsoluteTransform().getArray());
-		(*it)->render();
-		glPopMatrix();
+		if ((*it)->isVisible()) {
+			glPushMatrix();
+			glMultMatrixf((*it)->getOwner().lock()->
+						  getAbsoluteTransform().getArray());
+			(*it)->render();
+			glPopMatrix();
+		}
 	}
 
 	// Clear the depth buffer, allowing normal objects to always be drawn
@@ -76,10 +78,12 @@ void SceneManager::renderScene() const
 
 	// Draw all normal objects
 	for (auto it = normals.begin(); it != normals.end(); ++it) {
-		glPushMatrix();
-		glMultMatrixf((*it)->getOwner().lock()->
-		              getAbsoluteTransform().getArray());
-		(*it)->render();
-		glPopMatrix();
+		if ((*it)->isVisible()) {
+			glPushMatrix();
+			glMultMatrixf((*it)->getOwner().lock()->
+						  getAbsoluteTransform().getArray());
+			(*it)->render();
+			glPopMatrix();
+		}
 	}
 }
