@@ -1,8 +1,5 @@
 #include "Renderable.hpp"
 
-#include <Windows.h>
-#include <GL/glut.h>
-
 #include "Material.hpp"
 
 //! Renders a teapot

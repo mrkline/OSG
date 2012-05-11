@@ -16,8 +16,7 @@ public:
 	//! Sets this parameter to a given 4x4 transform matrixc
 	void setTransform(const Transform& t)
 	{
-		//! \todo Should this be cgGLSetMatrixParameterfc?
-		cgGLSetMatrixParameterfr(param, t.getArray());
+		cgGLSetMatrixParameterfc(param, t.getArray());
 		throwCgExceptions(__FUNCTION__);
 	}
 
@@ -71,7 +70,7 @@ public:
 		throwCgExceptions(__FUNCTION__);
 	}
 
-	//! Sets this parameter to a given array of 2 floats
+	//! Sets this parameter to a given array of 3 floats
 	void set3f(float x, float y, float z)
 	{
 		cgGLSetParameter3f(param, x, y, z);

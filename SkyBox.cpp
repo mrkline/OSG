@@ -14,13 +14,16 @@ SkyBox::SkyBox()
 {
 	if (!sky) {
 		sky = make_shared<Material>();
-		sky->color[0] = 0.7f;
-		sky->color[1] = 0.7f;
+		sky->writeToDepth = false;
+		sky->unlit[0] = 0.7f;
+		sky->unlit[1] = 0.7f;
+		sky->unlit[2] = 1.0f;
 
 		ground = make_shared<Material>();
-		ground->color[0] = 0.0f;
-		ground->color[1] = 0.3f;
-		ground->color[2] = 0.0f;
+		sky->writeToDepth = false;
+		ground->unlit[0] = 0.0f;
+		ground->unlit[1] = 0.3f;
+		ground->unlit[2] = 0.0f;
 	}
 	// By default, lets make our top and sides blue and our bottom green
 	for (int c = 0; c < SBF_BOTTOM; ++c)

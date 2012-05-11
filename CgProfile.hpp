@@ -1,7 +1,7 @@
 #pragma once
 
-#include "CgErrors.hpp"
 #include "CgContext.hpp"
+#include "CgErrors.hpp"
 
 //! A wrapper around Cg profiles for easy initialization
 class CgProfile
@@ -22,6 +22,8 @@ public:
 
 		throwCgExceptions(__FUNCTION__);
 	}
+
+	const char* getName() const { return cgGetProfileString(prof); }
 
 	//! Used by setActiveMaterial to set up shaders using this profile
 	void enable()

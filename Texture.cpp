@@ -61,7 +61,7 @@ Texture::~Texture()
 	SILLY::SILLYCleanup();
 }
 
-void Texture::setAsActiveTexture()
+void Texture::activateTexture()
 {
 	// Bind the texture and set its parameters
 	glBindTexture(GL_TEXTURE_2D, id);
@@ -81,9 +81,6 @@ void Texture::init(const void* data, int colorComponents,
 	glGenTextures(1, &id);
 	throwGLExceptions(__FUNCTION__);
 	glBindTexture(GL_TEXTURE_2D, id);
-	// select modulate to mix texture with color for shading
-	// Likely not needed since we plan on using shaders for everything
-	glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
 	intParams[GL_TEXTURE_MIN_FILTER] = GL_LINEAR_MIPMAP_NEAREST;
 	intParams[GL_TEXTURE_MIN_FILTER] = GL_LINEAR;

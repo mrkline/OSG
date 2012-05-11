@@ -1,8 +1,8 @@
 #pragma once
 
 #include "CgContext.hpp"
-#include "CgProfile.hpp"
 #include "CgNamedParameter.hpp"
+#include "CgProfile.hpp"
 
 //! An RAII wrapper around CGprogram, the handle for Cg shader programs
 class CgProgram
@@ -27,7 +27,11 @@ public:
 		                               fileName, profile.getHandle(),
 		                               entryPoint, args)),
 		prof(profile)
-	{ cgGLLoadProgram(prog); throwCgExceptions(__FUNCTION__); }
+	{
+		throwCgExceptions(__FUNCTION__);
+		cgGLLoadProgram(prog);
+		throwCgExceptions(__FUNCTION__);
+	}
 
 	~CgProgram() { cgDestroyProgram(prog); }
 

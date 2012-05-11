@@ -229,6 +229,9 @@ void Transform::getRotationRadians(Vector3& vecOut) const
 	if (Z < 0.0)
 		Z += 2 * Math::kPi;
 
+	vecOut.X = X;
+	vecOut.Y = Y;
+	vecOut.Z = Z;
 }
 
 void Transform::getRotatedAxes(Vector3& x, Vector3& y, Vector3& z)
@@ -415,6 +418,17 @@ void Transform::scale(const Vector3& scale)
 	s.matrix[10] = scale.Z;
 
 	*this *= s;
+}
+
+void Transform::translate(const Vector3& translation)
+{
+	Transform t;
+
+	t.matrix[12] = translation.X;
+	t.matrix[13] = translation.Y;
+	t.matrix[14] = translation.Z;
+
+	*this *= t;
 }
 
 void Transform::setFromArray(const float* transformMatrix)

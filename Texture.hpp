@@ -1,9 +1,7 @@
 #pragma once
 
-#include <GL/gl.h>
-
-#include <string>
 #include <map>
+#include <string>
 
 //! Represents a 2D texture loaded into OpenGL
 class Texture
@@ -34,8 +32,7 @@ public:
 	~Texture();
 
 	//! Used by the material system to activate this texture
-	//! \todo We'll have to change this when we support multitexturing
-	void setAsActiveTexture();
+	void activateTexture();
 
 	size_t getWidth() const { return width; }
 
@@ -45,10 +42,9 @@ public:
 	unsigned int getID() { return id; }
 
 	//! Gets the map of integer parameters set when the texture is activated
-	std::map<GLenum, int>& getIntParams() { return intParams; }
-
+	std::map<GLenum, int> intParams;
 	//! Gets the map of float parameters set when the texture is activated
-	std::map<GLenum, float>& getFloatParams() { return floatParams; }
+	std::map<GLenum, float> floatParams;
 
 private:
 	void init(const void* data, int colorComponents,
@@ -59,6 +55,4 @@ private:
 	size_t width;
 	size_t height;
 	bool hasMipmaps;
-	std::map<GLenum, int> intParams;
-	std::map<GLenum, float> floatParams;
 };

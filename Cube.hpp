@@ -5,8 +5,7 @@
 #include "Material.hpp"
 #include "Renderable.hpp"
 
-//! Renders a wireframe cube of radius 1
-//! \todo Allow client code to pick a radius
+//! Renders a cube of radius 1
 class Cube : public Renderable
 {
 public:

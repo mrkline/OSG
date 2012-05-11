@@ -20,7 +20,7 @@ public:
 
 	SkyBox();
 
-	RenderableType getType() { return RT_BACKGROUND; }
+	RenderableType getRenderableType() const { return RT_BACKGROUND; }
 
 	void render();
 

@@ -32,6 +32,8 @@ void Camera::setOrthographicProjection(float left, float right,
                                        float bottom, float top,
                                        float zNear, float zFar)
 {
+	near = zNear;
+	far = zFar;
 	// Instead of creating our own implementation, save the current matrix,
 	// calculate our projection using OGL functions, then retrieve our result
 	// and pop the matrix
@@ -47,6 +49,8 @@ void Camera::setOrthographicProjection(float left, float right,
 void Camera::setPerspectiveProjection(float fovY, float aspect,
                                       float zNear, float zFar)
 {
+	near = zNear;
+	far = zFar;
 	// Instead of creating our own implementation, save the current matrix,
 	// calculate our projection using OGL functions, then retrieve our result
 	// and pop the matrix

@@ -18,9 +18,9 @@ public:
 		// If we don't have a material, we need the default one to determine
 		// if we are to use wireframe or solid rendering
 		if (getActiveMaterial()->wireframe)
-			glutWireSphere(1.0, 10, 10);
+			glutWireSphere(1.0, 50, 50);
 		else
-			glutSolidSphere(1.0, 10, 10);
+			glutSolidSphere(1.0, 50, 50);
 	}
 
 	const std::shared_ptr<Material>& getMaterial() { return mat; }

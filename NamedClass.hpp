@@ -18,15 +18,19 @@ public:
 
 	//! Sets the object's ID
 	void SetID(int newID) { id = newID; }
+
 	//! Sets the object's name
 	void SetName(const std::string& newName) { name = newName; }
+
 	//! Sets the object's name
 	void SetName(const char* newName) { name = newName; }
 
 	//! Gets the object's ID
 	int GetID() const { return id; }
+
 	//! Gets the object's name
 	const std::string& GetName() const { return name; }
+
 	//! Gets the object's name
 	std::string& GetName() { return name; }
 

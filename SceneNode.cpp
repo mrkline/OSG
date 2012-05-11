@@ -10,13 +10,10 @@
 using namespace std;
 using namespace Exceptions;
 
-SceneNode::SceneNode(const shared_ptr<SceneNode>& parent,
-                     const Transform& startingTransform,
+SceneNode::SceneNode(const Transform& startingTransform,
                      int id, const string& name)
 	: NamedClass(id, name), trans(startingTransform), parent(parent)
 {
-	if (parent)
-		parent->children.push_back(shared_from_this());
 }
 
 void SceneNode::update()
@@ -32,7 +29,7 @@ void SceneNode::updateAbsoluteTransform()
 	if (!p)
 		absTrans = trans;
 	else
-		absTrans = trans * p->absTrans;
+		absTrans = p->absTrans * trans;
 }
 
 

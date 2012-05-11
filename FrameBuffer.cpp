@@ -32,7 +32,7 @@ FrameBuffer::~FrameBuffer()
 	glDeleteFramebuffers(1, &fbo);
 }
 
-void FrameBuffer::attachTexture(const shared_ptr<Texture>& tex)
+void FrameBuffer::attachTexture(const shared_ptr<Texture>& tex, int rtNum)
 {
 	if (tex->getWidth() != width || tex->getHeight() != height) {
 		throw Exceptions::ArgumentException("A texture must be the same"
@@ -42,10 +42,26 @@ void FrameBuffer::attachTexture(const shared_ptr<Texture>& tex)
 	}
 	// Bind the texture to the frame buffer
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
-	                       tex->getID(), 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + rtNum,
+			GL_TEXTURE_2D, tex->getID(), 0);
 	throwGLExceptions(__FUNCTION__);
 	// Check to make sure we're good to go
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+		throw Exceptions::GLException("Frame buffer object is not complete.",
+		                            __FUNCTION__);
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void FrameBuffer::setNumRenderTargets(size_t num)
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	unique_ptr<GLenum[]> arr(new GLenum[num]);
+	for (size_t c = 0; c < num; ++c)
+		arr[c] = GL_COLOR_ATTACHMENT0 + c;
+
+	glDrawBuffers(num, arr.get());
+	throwGLExceptions(__FUNCTION__);
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
 		throw Exceptions::GLException("Frame buffer object is not complete.",
 		                            __FUNCTION__);
@@ -59,6 +75,7 @@ void FrameBuffer::setupRender()
 	throwGLExceptions(__FUNCTION__);
 	glPushAttrib(GL_VIEWPORT_BIT);
 	glViewport(0, 0, width, height);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void FrameBuffer::cleanupRender()
