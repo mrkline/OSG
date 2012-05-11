@@ -8,10 +8,9 @@ OSG - OpenGL Scene Graph engine
 
 Take your pick. OSG is a simple scene graph-based engine that arose out of
 a project in a Computer Graphics class at the University of Wisconsin-Madison.
-At present time, it is currently just a poor substitude for the SceneManager
-from [Irrlicht](http://irrlicht.sourceforge.net/), with some minor tweaks.
-Future plans are to turn it into a deferred shading engine for the next CG
-project.
+Based somewhat on [Irrlicht](http://irrlicht.sourceforge.net/), OSG features
+support for render to texture (RTT), multiple render targets (MRT), and deferred
+shading.
 
 ### Dependencies
 
@@ -23,11 +22,22 @@ This allows textures to be loaded from PNG, JPEG, and TGA files.
 
 GLEW is used to access Framebuffer functionality.
 
+### Version History
+**0.1**:  
+The result of the second project in CS 559 (Computer Graphics) at the
+University of Wisconsin-Madison. Essentially just a poor man's Irrlicht with
+forward shading only.
+
+**0.2**:  
+A result of the third and final project in CS 559. The engine now sports
+several advanced features such as mesh loading from OBJ files and deferred
+shading.
+
 ### License
 
 (The zlib License)
 
-Copyright (c) 2012 Matt Kline
+Copyright (c) 2012 Matt Kline and Michael Sutherland
 
 This software is provided 'as-is', without any express or implied
 warranty. In no event will the authors be held liable for any damages
